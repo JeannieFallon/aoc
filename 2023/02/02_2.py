@@ -18,9 +18,9 @@ def get_game_power(sets: str) -> int:
     }
 
     for set in sets:
-        num_color = set.split(',')
+        num_colors = set.split(',')
 
-        for num_color in num_color:
+        for num_color in num_colors:
             num, color = num_color.split()
             num = int(num)
             if num > max_vals[color]:
