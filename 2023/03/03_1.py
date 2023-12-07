@@ -13,13 +13,12 @@ class Number:
     length: int = 0
     indices: list[tuple] = field(default_factory=list)
 
-    #list[int] = field(default_factory=list)
 
 SPEC_CHARS = '[@_!#$%^&*()<>?/\|}{~:]'
 
 
 def check_adjacent(num: Number, matrix: list) -> bool:
-    
+    #FIXME debug
     print(num.__repr__())
 
     # Iterate over list of Number indices
