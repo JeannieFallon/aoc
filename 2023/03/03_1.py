@@ -14,29 +14,86 @@ class Number:
     indices: list[tuple] = field(default_factory=list)
 
 
-SPEC_CHARS = '[@_!#$%^&*()<>?/\|}{~:]'
+SPEC_CHARS = '''!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'''
+
+
+def check_row_above(x: int, y: int, num: Number, matrix: list) -> bool:
+    # Skip if in first row of matrix
+    if x == 0:
+        return False
+
+    # Check column before
+    if not y == 0:
+        if matrix[x-1][y-1] in SPEC_CHARS:
+            return True
+
+    # Iterate over adjacent cols in row above
+    for c in range(num.length):
+        if matrix[x-1][y+c] in SPEC_CHARS:
+            return True
+
+    # Check column after
+    if not y == len(matrix[0]) - 1:
+        if matrix[x-1][y+1] in SPEC_CHARS:
+            return True
+
+    return False
+
+
+def check_row_curr(x: int, y: int, matrix: list) -> bool:
+    # Check column before
+    if not y == 0:
+        if matrix[x][y-1] in SPEC_CHARS:
+            return True
+
+    # Check column after
+    if not y == len(matrix[0]) - 1:
+        if matrix[x][y+1] in SPEC_CHARS:
+            return True
+
+    return False
+
+
+def check_row_below(x: int, y: int, num: Number, matrix: list) -> bool:
+    # Skip if in last row of matrix
+    if x == len(matrix) - 1:
+        return False
+
+    # Check column before
+    if not y == 0:
+        if matrix[x+1][y-1] in SPEC_CHARS:
+            return True
+
+    # Iterate over adjacent cols in row above
+    for c in range(num.length):
+        if matrix[x+1][y+c] in SPEC_CHARS:
+            return True
+
+    # Check column after
+    if not y == len(matrix[0]) - 1:
+        if matrix[x+1][y+1] in SPEC_CHARS:
+            return True
+
+    return False
 
 
 def check_adjacent(num: Number, matrix: list) -> bool:
-    #FIXME debug
-    print(num.__repr__())
-
     # Iterate over list of Number indices
     for idx in num.indices:
 
-    # Check adjacent spaces in matrix for special chars
+        # Pull coords for easier logic
+        x, y = idx[0], idx[1]
 
-        #FIXME debug
-        #print(matrix[idx[0]][idx[1]])
-        # First row of matrix
-        if idx[0] < 1:
-            print(f'first row: {idx[0]}')
-        # Final row of matrix
-        elif idx[0] == len(matrix) - 1:
-            print(f'final row: {idx[0]}')
+        # Row above
+        if check_row_above(x, y, num, matrix):
+            return True
 
-    # If find special char in adjacent space, break and return True
-        if False:
+        # Curr row
+        if check_row_curr(x, y, matrix):
+            return True
+
+        # Row below
+        if check_row_below(x, y, num, matrix):
             return True
 
     return False
@@ -66,9 +123,6 @@ def get_sum_part_nums(matrix: list) -> int:
                 # Reset placeholder string for next number
                 num = Number()
 
-        #FIXME debug break to isolate first line
-        #break
-
     return _sum
 
 
@@ -84,10 +138,10 @@ def main():
     result = get_sum_part_nums(matrix)
 
     # Demo
-    assert result == 4361
+    #assert result == 4361
     '''
     # Final
-    assert result == 2716
+    assert result == TBD
     '''
 
     print(f'Success for result: {result}')
