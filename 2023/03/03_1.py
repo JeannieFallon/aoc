@@ -77,7 +77,6 @@ def check_row_below(x: int, y: int, num: Number, matrix: list) -> bool:
     return False
 
 
-#FIXME numbers on beginning and end of line aren't hitting
 def check_adjacent(num: Number, matrix: list) -> bool:
     # Iterate over list of Number indices
     for idx in num.indices:
@@ -102,15 +101,18 @@ def check_adjacent(num: Number, matrix: list) -> bool:
 
 def get_sum_part_nums(matrix: list) -> int:
     _sum = 0
-
-    #FIXME
-    nums = []
+    num = Number()
 
     # Iterate over each line of engine schematic
     for i, line in enumerate(matrix):
 
-        # Create first possible number in line
-        num = Number()
+        # Check if number from end of last line
+        if num.value:
+            # Check rows above, current, and below
+            if (check_adjacent(num, matrix)):
+                _sum += int(num.value)
+            # Reset object for next number
+            num = Number()
 
         for j, char in enumerate(line):
 
@@ -123,17 +125,10 @@ def get_sum_part_nums(matrix: list) -> int:
             elif num.value:
                 # Check rows above, current, and below
                 if (check_adjacent(num, matrix)):
-
-                    #FIXME
-                    nums.append(num.value)
-
                     _sum += int(num.value)
-
                 # Reset object for next number
                 num = Number()
 
-    #FIXME
-    print(nums)
     return _sum
 
 
@@ -148,14 +143,12 @@ def main():
 
     result = get_sum_part_nums(matrix)
 
+    '''
     # Demo
     #assert result == 4361
     '''
     # Final
-    assert result == TBD
-    518146 wrong
-    521979 wrong
-    '''
+    assert result == 525911
 
     print(f'Success for result: {result}')
 
