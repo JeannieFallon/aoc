@@ -14,7 +14,7 @@ class Number:
     indices: list[tuple] = field(default_factory=list)
 
 
-SPEC_CHARS = '''!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'''
+SPEC_CHARS = {'@', '#', '-', '&', '$', '/', '+', '%', '=', '*'}
 
 
 def check_row_above(x: int, y: int, num: Number, matrix: list) -> bool:
@@ -77,6 +77,7 @@ def check_row_below(x: int, y: int, num: Number, matrix: list) -> bool:
     return False
 
 
+#FIXME numbers on beginning and end of line aren't hitting
 def check_adjacent(num: Number, matrix: list) -> bool:
     # Iterate over list of Number indices
     for idx in num.indices:
@@ -102,6 +103,9 @@ def check_adjacent(num: Number, matrix: list) -> bool:
 def get_sum_part_nums(matrix: list) -> int:
     _sum = 0
 
+    #FIXME
+    nums = []
+
     # Iterate over each line of engine schematic
     for i, line in enumerate(matrix):
 
@@ -115,14 +119,21 @@ def get_sum_part_nums(matrix: list) -> int:
                 num.value += char
                 num.indices.append((i, j))
 
-            # If not digit, only check if a number has been collected
+            # Check if at end of a number
             elif num.value:
+                # Check rows above, current, and below
                 if (check_adjacent(num, matrix)):
+
+                    #FIXME
+                    nums.append(num.value)
+
                     _sum += int(num.value)
 
-                # Reset placeholder string for next number
+                # Reset object for next number
                 num = Number()
 
+    #FIXME
+    print(nums)
     return _sum
 
 
@@ -133,7 +144,7 @@ def main():
     with fileinput.input(encoding="utf-8") as f:
         for line in f:
             # Create nested lists of engine schematic
-            matrix.append([i for i in line.strip()])
+            matrix.append([l for l in line.strip()])
 
     result = get_sum_part_nums(matrix)
 
@@ -142,6 +153,8 @@ def main():
     '''
     # Final
     assert result == TBD
+    518146 wrong
+    521979 wrong
     '''
 
     print(f'Success for result: {result}')
