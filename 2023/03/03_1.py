@@ -77,7 +77,7 @@ def check_row_below(x: int, y: int, num: Number, matrix: list) -> bool:
     return False
 
 
-def check_adjacent(num: Number, matrix: list) -> bool:
+def check_adjacent(num: Number, matrix: list) -> int:
     # Iterate over list of Number indices
     for idx in num.indices:
 
@@ -86,17 +86,18 @@ def check_adjacent(num: Number, matrix: list) -> bool:
 
         # Row above
         if check_row_above(x, y, num, matrix):
-            return True
+            return int(num.value)
 
         # Curr row
         if check_row_curr(x, y, matrix):
-            return True
+            return int(num.value)
 
         # Row below
         if check_row_below(x, y, num, matrix):
-            return True
+            return int(num.value)
 
-    return False
+    # If no adjacent symbol found, do not add to sum
+    return 0
 
 
 def get_sum_part_nums(matrix: list) -> int:
@@ -108,10 +109,7 @@ def get_sum_part_nums(matrix: list) -> int:
 
         # Check if number from end of last line
         if num.value:
-            # Check rows above, current, and below
-            if (check_adjacent(num, matrix)):
-                _sum += int(num.value)
-            # Reset object for next number
+            _sum += check_adjacent(num, matrix)
             num = Number()
 
         for j, char in enumerate(line):
@@ -123,10 +121,7 @@ def get_sum_part_nums(matrix: list) -> int:
 
             # Check if at end of a number
             elif num.value:
-                # Check rows above, current, and below
-                if (check_adjacent(num, matrix)):
-                    _sum += int(num.value)
-                # Reset object for next number
+                _sum += check_adjacent(num, matrix)
                 num = Number()
 
     return _sum
