@@ -14,7 +14,7 @@ def get_total_cards(cards: list) -> int:
     for i, card in enumerate(cards):
 
         # Track copies by [card num, num hits, num copies]
-        copy = [i+1, 0, 0]
+        copy = [i+1, 0, 1]
 
         # Iterate over nums and check if in wins list
         for num in card[1]:
@@ -22,20 +22,22 @@ def get_total_cards(cards: list) -> int:
                 copy[1] += 1
 
         copies.append(copy)
+    print(copies)
 
     # Now get num copies based upon other cards
     for j, copy in enumerate(copies):
         # Get number of cards to increment
         hits = copy[1]
 
-        #FIXME make this recursive
+        # Get number of copies
+        num_copies = copy[2]
+
         # Increment num copies for the following cards
-        for k in range(hits):
-            copies[j+k+1][2] += 1
+        for num in range(num_copies):
+            for k in range(hits):
+                copies[j+k+1][2] += 1
 
-
-    #FIXME
-    print(copies)
+        _sum += copy[2]
 
     return _sum
 
@@ -59,16 +61,12 @@ def main():
     # Need to get total after all cards have been parsed
     result += get_total_cards(cards)
 
-    #FIXME
-    #print(cards)
-    print(result)
-
+    '''
     # Demo
     assert result == 30
     '''
     # Final
-    assert result == TBD
-    '''
+    assert result == 13080971
 
     print(f'Success for result: {result}')
 
