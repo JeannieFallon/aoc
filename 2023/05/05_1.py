@@ -1,25 +1,127 @@
 import sys
 import fileinput
 
+from dataclasses import dataclass, field
+
 '''
 python 05_2.py input_05.txt
 '''
 
+@dataclass
+class MapVals:
+    dest: int
+    src: int
+    length: int
 
-def get_lowest_location(cards: list) -> int:
+@dataclass
+class BaseMapping:
+    mappings: list[MapVals] = field(default_factory=list)
+
+@dataclass
+class SeedSoil(BaseMapping):
+    category: str = "seed-to-soil"
+
+@dataclass
+class SoilFert(BaseMapping):
+    category: str = "soil-to-fertilizer"
+
+@dataclass
+class FertWater(BaseMapping):
+    category: str = "fertilizer-to-water"
+
+@dataclass
+class WaterLight(BaseMapping):
+    category: str = "water-to-light"
+
+@dataclass
+class LightTemp(BaseMapping):
+    category: str = "light-to-temperature"
+
+@dataclass
+class TempHumid(BaseMapping):
+    category: str = "temperature-to-humidity"
+
+@dataclass
+class HumidLoc(BaseMapping):
+    category: str = "humidity-to-location"
+
+@dataclass
+class Almanac:
+    seeds: list[int] = field(default_factory=list)
+    mappings: list[BaseMapping] = field(default_factory=list)
+    categories: list[str] = field(default_factory=list)
+
+
+def get_lowest_location(alm: Almanac) -> int:
     _sum = 0
     return _sum
 
 
+# FIXME: there's almost certainly a way to do this within the dataclass
+def load_almanac() -> Almanac:
+    alm = Almanac()
+
+    alm.mappings.append(SeedSoil())
+    alm.mappings.append(SoilFert())
+    alm.mappings.append(FertWater())
+    alm.mappings.append(WaterLight())
+    alm.mappings.append(LightTemp())
+    alm.mappings.append(TempHumid())
+    alm.mappings.append(HumidLoc())
+
+    for mapping in alm.mappings:
+        alm.categories.append(mapping.category)
+
+    return alm
+
+
 def main():
+    alm = load_almanac()
     result = 0
-    cards = []
 
-    with fileinput.input(encoding="utf-8") as f:
-        for line in f:
-            cards.append(line)
+    # Need to use readlines() for this one to
+    # parse groups of lines as mappings
+    filename = sys.argv[1]
 
-    result += get_lowest_location(cards)
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+        len_lines = len(lines)
+
+        # Get seeds from first line
+        seeds = lines[0].split(':')[1].split()
+        for seed in seeds:
+            alm.seeds.append(seed)
+
+        # Start at first mapping on third line
+        for i in range(2, len_lines):
+            line = lines[i]
+
+            # Skip all empty lines
+            if line != '\n':
+                category = line.split()[0]
+
+                #FIXME should be able to skip this check
+                if category in alm.categories:
+                    # Match category to mapping category
+                    for mapping in alm.mappings:
+                        if category == mapping.category:
+                            curr = mapping
+
+                            # Skip header line
+                            i += 1
+                            while i < len_lines and lines[i] != '\n':
+                                vals = lines[i].split()
+                                map_vals = MapVals(vals[0], vals[1], vals[2])
+                                curr.mappings.append(map_vals)
+                                i += 1
+
+                            break
+
+
+    # FIXME
+    #print(alm)
+
+    result += get_lowest_location(alm)
 
     # Demo
     assert result == 35
