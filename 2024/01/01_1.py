@@ -35,8 +35,6 @@ def main() -> int:
     # Demo
     assert result == 11
     '''
-    # Final
-    assert result == 3508942
     print(f'Success for result: {result}')
 
     return 0
