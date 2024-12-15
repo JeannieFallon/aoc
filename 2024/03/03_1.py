@@ -19,7 +19,6 @@ def get_uncorrupted_sum(corrupted: list) -> int:
 
     for line in corrupted:
         hits = re.findall(r"mul\(\d{1,3},\d{1,3}\)", line)
-        print(hits)
 
         for hit in hits:
             sum += get_product(hit)
@@ -32,7 +31,6 @@ def main() -> int:
     with fileinput.input(encoding="utf-8") as f:
         for line in f:
             corrupt.append(line)
-        print(corrupt)
 
     result = get_uncorrupted_sum(corrupt)
 
